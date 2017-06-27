@@ -19,6 +19,7 @@ if((!$fin) || eof($fin)) {
 	die "Can't find C compiler" if(!defined($fin));
 }
 my $gccinfo = do { local $/; <$fin> };
+close($fin);
 if($gccinfo =~ /\s([\d\.]+)/) {
 	$gccversion = $1;
 } elsif($gccinfo =~ /LLVM\sversion\s([\d\,]+)/s) {
