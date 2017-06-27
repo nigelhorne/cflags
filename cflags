@@ -1,5 +1,7 @@
 #!/usr/bin/env perl
 
+# TODO: Differentiate between 32- and 64-bits
+
 use strict;
 use warnings;
 use Sys::Info;
@@ -9,7 +11,12 @@ my $cputype;
 my $isllvm;
 my $cflags;
 
-open(my $fin, '-|', 'gcc --version 2>&1');
+my $fin;
+open($fin, '-|', 'gcc --version 2>&1');
+if((!$fin) || eof($fin)) {
+	open($fin, '-|', 'cc --version 2>&1');
+	die "Can't find C compiler" if(!defined($fin));
+}
 my $gccinfo = do { local $/; <$fin> };
 if($gccinfo =~ /\s([\d\.]+)/) {
 	$gccversion = $1;
@@ -28,11 +35,13 @@ if($info->{'architecture'} eq 'AMD-64') {
 	$cputype = 'amd';
 } elsif($info->{'name'} =~ /^AMD/) {
 	$cputype = 'amd';
+} elsif($info->{'name'} =~ /^Intel/) {
+	$cputype = 'x86';
 } elsif($info->{'architecture'} eq 'aarch64') {
 	$cputype = 'arm';
 }
 
-if($cputype eq 'amd') {
+if(($cputype eq 'amd') || ($cputype eq 'x86')) {
 	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -fomit-frame-pointer -pedantic -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef -Wformat-security -ftree-vectorize -fdiagnostics-color=auto';
 } elsif($cputype eq 'arm') {
 	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -fomit-frame-pointer -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef -Wformat-security';
