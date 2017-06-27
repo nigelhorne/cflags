@@ -31,14 +31,18 @@ my @i =  $cpu->identify();
 my $info = $i[0];
 # use Data::Dumper;
 # print Data::Dumper->new([\$info])->Dump();
-if($info->{'architecture'} eq 'AMD-64') {
-	$cputype = 'amd';
-} elsif($info->{'name'} =~ /^AMD/) {
-	$cputype = 'amd';
-} elsif($info->{'name'} =~ /^Intel/) {
-	$cputype = 'x86';
-} elsif($info->{'architecture'} eq 'aarch64') {
-	$cputype = 'arm';
+if($info) {
+	if($info->{'architecture'} eq 'AMD-64') {
+		$cputype = 'amd';
+	} elsif($info->{'name'} =~ /^AMD/) {
+		$cputype = 'amd';
+	} elsif($info->{'name'} =~ /^Intel/) {
+		$cputype = 'x86';
+	} elsif($info->{'architecture'} eq 'aarch64') {
+		$cputype = 'arm';
+	}
+} elsif($^O eq 'gnu') {
+	$cputype = 'x86';	# I believe GNU/Hurd only runs on this
 }
 
 if(($cputype eq 'amd') || ($cputype eq 'x86')) {
