@@ -81,7 +81,7 @@ if($^O eq 'linux') {
 die "Can't determine cpu type" if(!defined($cputype));
 die "Can't determine GCC version" if(!defined($gccversion));
 
-if(($cputype eq 'amd') || ($cputype = 'x86')) {
+if(($cputype eq 'amd') || ($cputype eq 'x86')) {
 	$cflags .= ' -mtune=native -march=native';
 }
 
