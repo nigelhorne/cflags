@@ -33,9 +33,25 @@ if($info->{'architecture'} eq 'AMD-64') {
 }
 
 if($cputype eq 'amd') {
-	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -mtune=native -march=native -fomit-frame-pointer -msse2 -msse -mmmx -mfpmath=sse -pedantic -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef -Wformat-security -ftree-vectorize -fdiagnostics-color=auto';
+	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -fomit-frame-pointer -pedantic -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef -Wformat-security -ftree-vectorize -fdiagnostics-color=auto';
 } elsif($cputype eq 'arm') {
 	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -fomit-frame-pointer -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef -Wformat-security';
+}
+
+foreach my $flag (@{$info->{'flags'}}) {
+	if($flag eq 'SSE') {
+		$cflags .= ' -msse -mfpmath=sse';
+	} elsif($flag eq 'SSE2') {
+		$cflags .= ' -msse2';
+	} elsif($flag eq 'SSE3') {
+		$cflags .= ' -msse3';
+	} elsif($flag eq 'SSE4.1') {
+		$cflags .= ' -msse4.1';
+	} elsif($flag eq 'SSE4.2') {
+		$cflags .= ' -msse4.2';
+	} elsif($flag eq 'MMX') {
+		$cflags .= ' -mmmx';
+	}
 }
 
 if($ENV{'CFLAGS'}) {
@@ -47,6 +63,7 @@ if($ENV{'CFLAGS'}) {
 }
 
 if($^O eq 'linux') {
+	# FIXME: Probably also in Sys::Info
 	open(my $fin, '<', '/proc/cpuinfo');
 	my $cpuinfo = do { local $/; <$fin> };
 	close $fin;
@@ -59,6 +76,13 @@ if($^O eq 'linux') {
 	} elsif($cpuinfo =~ /model name/s) {
 		die $cputype if($cputype ne 'x86' && $cputype ne 'amd');
 	}
+}
+
+die "Can't determine cpu type" if(!defined($cputype));
+die "Can't determine GCC version" if(!defined($gccversion));
+
+if(($cputype eq 'amd') || ($cputype = 'x86')) {
+	$cflags .= ' -mtune=native -march=native';
 }
 
 # print "$cputype, $gccversion\n";
