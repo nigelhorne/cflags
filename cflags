@@ -5,6 +5,7 @@
 use strict;
 use warnings;
 use Sys::Info;
+use version;
 
 my $gccversion;
 my $cputype;
@@ -50,7 +51,7 @@ if($info) {
 }
 
 if(($cputype eq 'amd') || ($cputype eq 'x86')) {
-	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -fomit-frame-pointer -pedantic -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef -Wformat-security -ftree-vectorize -fdiagnostics-color=auto';
+	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -fomit-frame-pointer -pedantic -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef -Wformat-security -ftree-vectorize';
 } elsif($cputype eq 'arm') {
 	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -fomit-frame-pointer -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef -Wformat-security';
 }
@@ -99,6 +100,11 @@ if($^O eq 'linux') {
 
 die "Can't determine cpu type" if(!defined($cputype));
 die "Can't determine GCC version" if(!defined($gccversion));
+
+my $v = version->parse($gccversion);
+if($v >= version->parse('5.0')) {
+	$cflags .= ' -fdiagnostics-color=auto';
+}
 
 if(($cputype eq 'amd') || ($cputype eq 'x86')) {
 	$cflags .= ' -mtune=native -march=native';
