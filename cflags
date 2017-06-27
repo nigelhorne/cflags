@@ -22,8 +22,8 @@ my $cpu = Sys::Info->new()->device('CPU');
 
 my @i =  $cpu->identify();
 my $info = $i[0];
-# use Data::Dumper;
-# print Data::Dumper->new([\$info])->Dump();
+use Data::Dumper;
+print Data::Dumper->new([\$info])->Dump();
 if($info->{'architecture'} eq 'AMD-64') {
 	$cputype = 'amd';
 } elsif($info->{'name'} =~ /^AMD/) {
@@ -39,9 +39,9 @@ if($cputype eq 'amd') {
 }
 
 foreach my $flag (@{$info->{'flags'}}) {
-	if($flag eq 'SSE') {
+	if(($flag eq 'SSE') || ($flag eq 'sse')) {
 		$cflags .= ' -msse -mfpmath=sse';
-	} elsif($flag eq 'SSE2') {
+	} elsif(($flag eq 'SSE2') || ($flag eq 'sse2')) {
 		$cflags .= ' -msse2';
 	} elsif($flag eq 'SSE3') {
 		$cflags .= ' -msse3';
