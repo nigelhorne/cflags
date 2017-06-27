@@ -1,1 +1,1 @@
-Early stages of development, not fit for purpose yet.
+Early stages of development, many architectures are not yet supported.
