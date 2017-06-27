@@ -101,7 +101,7 @@ if($^O eq 'linux') {
 	}
 }
 
-die "Can't determine cpu type" if(!defined($cputype));
+die "Can't determine CPU type" if(!defined($cputype));
 die "Can't determine GCC version" if(!defined($gccversion));
 
 my $v = version->parse($gccversion);
