@@ -22,8 +22,8 @@ my $cpu = Sys::Info->new()->device('CPU');
 
 my @i =  $cpu->identify();
 my $info = $i[0];
-use Data::Dumper;
-print Data::Dumper->new([\$info])->Dump();
+# use Data::Dumper;
+# print Data::Dumper->new([\$info])->Dump();
 if($info->{'architecture'} eq 'AMD-64') {
 	$cputype = 'amd';
 } elsif($info->{'name'} =~ /^AMD/) {
