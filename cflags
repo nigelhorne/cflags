@@ -1,0 +1,65 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use Sys::Info;
+
+my $gccversion;
+my $cputype;
+my $isllvm;
+my $cflags;
+
+open(my $fin, '-|', 'gcc --version 2>&1');
+my $gccinfo = do { local $/; <$fin> };
+if($gccinfo =~ /\s([\d\.]+)/) {
+	$gccversion = $1;
+} elsif($gccinfo =~ /LLVM\sversion\s([\d\,]+)/s) {
+	$gccversion = $1;
+	$isllvm = 1;
+}
+
+my $cpu = Sys::Info->new()->device('CPU');
+
+my @i =  $cpu->identify();
+my $info = $i[0];
+# use Data::Dumper;
+# print Data::Dumper->new([\$info])->Dump();
+if($info->{'architecture'} eq 'AMD-64') {
+	$cputype = 'amd';
+} elsif($info->{'name'} =~ /^AMD/) {
+	$cputype = 'amd';
+} elsif($info->{'architecture'} eq 'aarch64') {
+	$cputype = 'arm';
+}
+
+if($cputype eq 'amd') {
+	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -mtune=native -march=native -fomit-frame-pointer -msse2 -msse -mmmx -mfpmath=sse -pedantic -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef -Wformat-security -ftree-vectorize -fdiagnostics-color=auto';
+} elsif($cputype eq 'arm') {
+	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -fomit-frame-pointer -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef -Wformat-security';
+}
+
+if($ENV{'CFLAGS'}) {
+	foreach my $arg (split(' ', $ENV{'CFLAGS'})) {
+		if($arg =~ /^-I/) {
+			$cflags .= " $arg";
+		}
+	}
+}
+
+if($^O eq 'linux') {
+	open(my $fin, '<', '/proc/cpuinfo');
+	my $cpuinfo = do { local $/; <$fin> };
+	close $fin;
+
+	if($cpuinfo =~ /CPU implementer/s) {
+		die $cputype if($cputype ne 'arm');
+		if(($cpuinfo =~ /^Features.+crc32/ms) && ($cpuinfo =~ /^Features.+atomics/ms)) {	
+			$cflags .= ' -march=avmv8-a-crc32';
+		}
+	} elsif($cpuinfo =~ /model name/s) {
+		die $cputype if($cputype ne 'x86' && $cputype ne 'amd');
+	}
+}
+
+# print "$cputype, $gccversion\n";
+print $cflags;
