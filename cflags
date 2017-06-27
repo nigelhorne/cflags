@@ -45,9 +45,11 @@ foreach my $flag (@{$info->{'flags'}}) {
 		$cflags .= ' -msse2';
 	} elsif($flag eq 'SSE3') {
 		$cflags .= ' -msse3';
-	} elsif($flag eq 'SSE4.1') {
+	} elsif($flag eq 'ssse3') {
+		$cflags .= ' -mssse3';
+	} elsif(($flag eq 'SSE4.1') || ($flag eq 'sse4_1')) {
 		$cflags .= ' -msse4.1';
-	} elsif($flag eq 'SSE4.2') {
+	} elsif(($flag eq 'SSE4.2') || ($flag eq 'sse4_2')) {
 		$cflags .= ' -msse4.2';
 	} elsif($flag eq 'MMX') {
 		$cflags .= ' -mmmx';
