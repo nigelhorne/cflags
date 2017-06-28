@@ -1,0 +1,26 @@
+language: perl
+
+os:
+  - linux
+  # - osx
+
+# services:
+  # - docker
+
+perl:
+  - "5.26"
+  - "5.24"
+  - "5.22"
+  - "5.20"
+  - "5.18"
+  - "5.16"
+  - "5.14"
+  - "5.12"
+
+install:
+  - cpanm --skip-satisfied -q -n Sys::Info warnings::unused
+
+script:
+  - perl -c -MO=Lint ./cflags
+  - perl -c -Mwarnings::unused ./cflags
+  - ./cflags
