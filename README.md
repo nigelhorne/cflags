@@ -1,6 +1,7 @@
 Early stages of development, many architectures are not yet supported.
 
-You'll need to grab and install Sys::Info from your favourite repositary:
+If you see "Can't locate Sys/Info.pm in @INC",
+you'll need to grab and install Sys::Info from your favourite repository:
 
     cpan -i Sys::Info
 

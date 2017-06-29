@@ -99,6 +99,8 @@ if($^O eq 'linux') {
 			$cflags .= ' -march=avmv8-a-crc32';
 		} elsif($cpuinfo =~ /^Features.+vfpv4/ms) {
 			$cflags .= ' -mfpu=vfpv4 -mfloat-abi=hard';
+		} elsif($cpuinfo =~ /^Features.+vfpv3/ms) {
+			$cflags .= ' -mfpu=vfpv3 -mfloat-abi=hard';
 		}
 	} elsif($cpuinfo =~ /model name/s) {
 		die $cputype if($cputype ne 'x86' && $cputype ne 'amd');
