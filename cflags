@@ -104,6 +104,9 @@ if($^O eq 'linux') {
 		} elsif($cpuinfo =~ /^Features.+vfpv3/ms) {
 			$cflags .= ' -mfpu=vfpv3 -mfloat-abi=hard';
 		}
+		if($info->{'architecture'} eq 'armv7l') {
+			$cflags .= ' -mtune=cortex-a7';
+		}
 	} elsif($cpuinfo =~ /model name/s) {
 		die $cputype if($cputype ne 'x86' && $cputype ne 'amd');
 	} elsif($cputype eq 'ppc') {
