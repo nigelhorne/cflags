@@ -53,6 +53,12 @@ if($info) {
 	$cputype = 'x86';	# I believe GNU/Hurd only runs on this
 }
 
+if(!defined($cputype)) {
+	use Data::Dumper;
+	print Data::Dumper->new([\@i])->Dump();
+	die "Can't determine the CPU type";
+}
+
 if(($cputype eq 'amd') || ($cputype eq 'x86')) {
 	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -fomit-frame-pointer -pedantic -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef -Wformat-security -ftree-vectorize';
 } elsif($cputype eq 'arm') {
