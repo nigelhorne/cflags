@@ -44,6 +44,8 @@ if($info) {
 		$cputype = 'ppc';
 	} elsif($info->{'manufacturer'} eq 'GenuineIntel') {
 		$cputype = 'x86';
+	} elsif($info->{'architecture'} eq 's390x') {
+		$cputype = 's390x';
 	} else {
 		use Data::Dumper;
 		print Data::Dumper->new([\$info])->Dump();
@@ -65,6 +67,8 @@ if(($cputype eq 'amd') || ($cputype eq 'x86')) {
 	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -fomit-frame-pointer -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef -Wformat-security';
 } elsif($cputype eq 'ppc') {
 	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -mtune=native -fomit-frame-pointer -ffast-math -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef';
+} elsif($cputype eq 's390x') {
+	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -fomit-frame-pointer -ffast-math -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef';
 }
 
 foreach my $flag (@{$info->{'flags'}}) {
@@ -122,6 +126,11 @@ if($^O eq 'linux') {
 		if($cpuinfo =~ /^cpu.+7450/ms) {
 			$cflags .= ' -mtune=7450';
 		}
+	} elsif($cputype eq 's390x') {
+		# Don't add -m64, since it stops things being found in
+		# /usr/include/sys.
+		# $cflags .= ' -mzarch -m64';
+		$cflags .= ' -mzarch';
 	} else {
 		die $cputype if($cputype ne 'x86' && $cputype ne 'amd');
 	}
