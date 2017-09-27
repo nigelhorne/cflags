@@ -8,3 +8,6 @@ you'll need to grab and install Sys::Info from your favourite repository:
 Put this into your .bash_profile:
 
     export CFLAGS=$(src/cflags/cflags)
+
+Note that on some systems CFLAGS will include -mfloat-abi=hard, which you'll also need
+to add to LDFLAGS.
