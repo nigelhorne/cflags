@@ -47,7 +47,8 @@ if($info) {
 	} elsif($info->{'architecture'} eq 's390x') {
 		$cputype = 's390x';
 	} else {
-		use Data::Dumper;
+		require Data::Dumper;
+		Data::Dumper->import();
 		print Data::Dumper->new([\$info])->Dump();
 		die "Can't determine the architecture";
 	}
