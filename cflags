@@ -108,7 +108,7 @@ if($^O eq 'linux') {
 	if($cpuinfo =~ /CPU implementer/s) {
 		die $cputype if($cputype ne 'arm');
 		if(($cpuinfo =~ /^Features.+crc32/ms) && ($cpuinfo =~ /^Features.+atomics/ms)) {	
-			$cflags .= ' -march=avmv8-a-crc32';
+			$cflags .= ' -march=armv8-a+crc';
 		} elsif(($cpuinfo =~ /^Features.+vfpv4/ms) && ($cpuinfo =~ /^Features.+neon/ms)) {
 			$cflags .= ' -mfpu=neon-vfpv4 -mfloat-abi=hard';
 		} elsif($cpuinfo =~ /^Features.+vfpv4/ms) {
