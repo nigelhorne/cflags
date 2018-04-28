@@ -9,5 +9,5 @@ Put this into your .bash_profile:
 
     export CFLAGS=$(src/cflags/cflags)
 
-Note that on some systems CFLAGS will include -mfloat-abi=hard, which you'll also need
-to add to LDFLAGS.
+Note that on some systems CFLAGS will include -mfloat-abi=hard,
+which you'll also need to add to LDFLAGS.
