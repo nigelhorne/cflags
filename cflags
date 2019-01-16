@@ -40,7 +40,7 @@ if($info) {
 		$cputype = 'amd';
 	} elsif($info->{'name'} =~ /^Intel/) {
 		$cputype = 'x86';
-	} elsif(($info->{'architecture'} eq 'aarch64') || ($info->{'architecture'} eq 'armv7l')) {
+	} elsif(($info->{'architecture'} eq 'aarch64') || ($info->{'architecture'} eq 'armv7l') || ($info->{'architecture'} eq 'arm')) {
 		$cputype = 'arm';
 	} elsif($info->{'architecture'} eq 'ppc') {
 		$cputype = 'ppc';
