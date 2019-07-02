@@ -92,6 +92,13 @@ foreach my $flag (@{$info->{'flags'}}) {
 		$cflags .= ' -maes';
 	} elsif($flag eq 'MMX') {
 		$cflags .= ' -mmmx';
+	} elsif($flag eq 'FPU') {
+		if($cputype eq 'arm') {
+			$cflags .= ' -mfloat-abi=hard';
+			if($info->{'name'} =~ /Cortex-A7/) {
+				$cflags .= ' -mfpu=neon-vfpv4';
+			}
+		}
 	# } else {
 		# print ">>>$flag\n";
 	}
@@ -141,6 +148,10 @@ if($^O eq 'linux') {
 		$cflags .= ' -mzarch';
 	} else {
 		die $cputype if($cputype ne 'x86' && $cputype ne 'amd');
+	}
+} else {
+	if($info->{'name'} =~ /Cortex-A7/) {
+		$cflags .= ' -mtune=cortex-a7';
 	}
 }
 
