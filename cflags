@@ -34,17 +34,19 @@ my $info = $i[0];
 if($info) {
 	if($info->{'architecture'} eq 'AMD-64') {
 		$cputype = 'amd';
-	} elsif($info->{'name'} =~ /^AMD/) {
+	} elsif($info->{'name'} && ($info->{'name'} =~ /^AMD/)) {
 		$cputype = 'amd';
 	} elsif($info->{'architecture'} =~ /^AMD/i) {
 		$cputype = 'amd';
-	} elsif($info->{'name'} =~ /^Intel/) {
+	} elsif($info->{'name'} && ($info->{'name'} =~ /^Intel/)) {
+		$cputype = 'x86';
+	} elsif($info->{'architecture'} =~ /^Intel/) {
 		$cputype = 'x86';
 	} elsif(($info->{'architecture'} eq 'aarch64') || ($info->{'architecture'} eq 'armv7l') || ($info->{'architecture'} eq 'arm')) {
 		$cputype = 'arm';
 	} elsif($info->{'architecture'} eq 'ppc') {
 		$cputype = 'ppc';
-	} elsif($info->{'manufacturer'} eq 'GenuineIntel') {
+	} elsif($info->{'manufacturer'} && ($info->{'manufacturer'} eq 'GenuineIntel')) {
 		$cputype = 'x86';
 	} elsif($info->{'architecture'} eq 's390x') {
 		$cputype = 's390x';
