@@ -4,8 +4,60 @@
 
 use strict;
 use warnings;
-use Sys::Info;
 use version;
+use autodie qw(:all);
+
+no lib '.';
+
+my @needfull;
+
+# Install Pre-requisites
+BEGIN {
+	my @modules = (
+		'Sys::Info',
+	);
+
+	foreach my $module(@modules) {
+		eval "use $module";
+		if($@) {
+			push @needfull, $module;
+		}
+	}
+
+	if(scalar(@needfull)) {
+		my $list = join(' ', @needfull);
+		print "Installing $list\n";
+		system("cpan -i $list");
+	}
+
+	# FIXME
+	$SIG{__WARN__} = sub {
+		my $warning = shift;
+		if($warning =~ /^Use of uninitialized value/) {
+			die $warning;
+		}
+		warn $warning;
+	};
+}
+
+foreach my $module(@needfull) {
+	my $version;
+	if($module =~ /(.+)\s(.+)$/) {
+		$module = $1;
+		$version = $2;
+	}
+	if($module =~ /.+\/(.+)/) {
+		$module = $1;
+	}
+	eval "require $module";
+	if($@) {
+		die $@;
+	}
+	$module->import();
+	# if($version && ($module::VERSION < $version)) {
+		# die "$module: need $version got ", $module::VERSION;
+	# }
+}
 
 my $gccversion;
 my $cputype;
