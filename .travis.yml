@@ -38,9 +38,6 @@ jobs:
       install:
         - cpanm --skip-satisfied -q -n Sys::Info warnings::unused B::Lint IPC::System::Simple
       script:
-        - perl Makefile.PL
-        - gmake
-        - gmake test
         - perl -c -MO=Lint ./cflags
         - perl -c -Mwarnings::unused ./cflags
         - ./cflags
