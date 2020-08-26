@@ -19,6 +19,8 @@ perl:
   - "5.14"
   # - "5.12"
 
+sudo: false
+
 install:
   - cpanm --skip-satisfied -q -n Sys::Info warnings::unused B::Lint IPC::System::Simple
 
