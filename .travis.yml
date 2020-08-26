@@ -8,6 +8,8 @@ os:
   # - docker
 
 perl:
+  - "5.30"
+  - "5.28"
   - "5.26"
   - "5.24"
   - "5.22"
@@ -18,9 +20,27 @@ perl:
   - "5.12"
 
 install:
-  - cpanm --skip-satisfied -q -n Sys::Info warnings::unused B::Lint
+  - cpanm --skip-satisfied -q -n Sys::Info warnings::unused B::Lint IPC::System::Simple
 
 script:
   - perl -c -MO=Lint ./cflags
   - perl -c -Mwarnings::unused ./cflags
   - ./cflags
+
+jobs:
+  include:
+    - stage: Windows
+      os: windows
+      language: shell
+      before_install:
+        - cinst -y strawberryperl
+        - export "PATH=/c/Strawberry/perl/site/bin:/c/Strawberry/perl/bin:/c/Strawberry/c/bin:$PATH"
+      install:
+        - cpanm --notest --installdeps .
+      script:
+        - perl Makefile.PL
+        - gmake
+        - gmake test
+        - perl -c -MO=Lint ./cflags
+        - perl -c -Mwarnings::unused ./cflags
+        - ./cflags
