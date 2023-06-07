@@ -27,7 +27,9 @@ BEGIN {
 	if(scalar(@needfull)) {
 		my $list = join(' ', @needfull);
 		print "Installing $list\n";
-		system("cpan -i $list");
+		# system("cpan -i $list");
+		$ENV{'PERL_MM_USE_DEFAULT'} = 1;
+		system('perl -MCPAN -e \'CPAN::Shell->install("' . join('", "', @needfull) . '")\'');
 	}
 
 	# FIXME
