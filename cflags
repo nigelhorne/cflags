@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 use version;
-use autodie qw(:all);
+# use autodie qw(:all);	# Don't use or else the gcc/cc probe will fail
 
 no lib '.';
 
