@@ -96,7 +96,10 @@ if($info) {
 		$cputype = 'x86';
 	} elsif($info->{'architecture'} =~ /^Intel/) {
 		$cputype = 'x86';
-	} elsif(($info->{'architecture'} eq 'aarch64') || ($info->{'architecture'} eq 'armv7l') || ($info->{'architecture'} eq 'arm')) {
+	} elsif(($info->{'architecture'} eq 'aarch64') ||
+		($info->{'architecture'} eq 'armv7l') ||
+		($info->{'architecture'} eq 'arm64') ||	# e.g. Apple M3
+		($info->{'architecture'} eq 'arm')) {
 		$cputype = 'arm';
 	} elsif($info->{'architecture'} eq 'ppc') {
 		$cputype = 'ppc';
@@ -131,6 +134,8 @@ if(($cputype eq 'amd') || ($cputype eq 'x86')) {
 	$cflags = '-O2 -W -Wformat=2 -Wswitch -Wshadow -Wwrite-strings -Wuninitialized -Wall -pipe -fomit-frame-pointer -ffast-math -D_FORTIFY_SOURCE=2 -Wpointer-arith -Wstrict-prototypes -fstack-protector -Wstack-protector -Wextra -Wbad-function-cast -Wcast-align -Wcast-qual -Wdisabled-optimization -Wendif-labels -Wfloat-equal -Wformat-nonliteral -Winline -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wpointer-arith -Wundef';
 }
 
+# FIXME: On the Apple M3 on OS/X, this field is undef.
+#	It should be able to set -mfpu=vfp -mfloat-abi=hard, but doesn't
 foreach my $flag (@{$info->{'flags'}}) {
 	if(($flag eq 'SSE') || ($flag eq 'sse')) {
 		$cflags .= ' -msse -mfpmath=sse';
@@ -208,6 +213,8 @@ if($^O eq 'linux') {
 } else {
 	if($info->{'name'} =~ /Cortex-A7/) {
 		$cflags .= ' -mtune=cortex-a7';
+	} else {
+		$cflags .= ' -mtune=native';
 	}
 }
 
