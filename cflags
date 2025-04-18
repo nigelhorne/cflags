@@ -225,7 +225,7 @@ my $v = version->parse($gccversion);
 if($v >= version->parse('5.0')) {
 	$cflags .= ' -fdiagnostics-color=auto';
 	if($v >= version->parse('8.0')) {
-		$cflags .= ' -flto -shared';
+		$cflags .= ' -flto';
 	}
 }
 
